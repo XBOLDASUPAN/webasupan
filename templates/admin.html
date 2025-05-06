@@ -268,18 +268,18 @@
                         </tr>
 
                         <!-- Modal Edit Tags -->
-                        <div class="modal fade" id="editTagsModal{{ video.id }}" tabindex="-1" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal" id="editTagsModal{{ video.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title">Edit Tag - {{ video.title }}</h5>
+                                        <h5 class="modal-title text-white">Edit Tag - {{ video.title }}</h5>
                                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <form action="{{ url_for('edit_video_tags', id=video.id) }}" method="POST">
                                         <div class="modal-body">
                                             <div class="mb-3">
-                                                <label class="form-label">Tag</label>
-                                                <select name="tags[]" class="form-select bg-dark text-white" multiple size="8" style="min-height: 200px;">
+                                                <label class="form-label text-white">Pilih Tag</label>
+                                                <select name="tags[]" class="form-select" multiple size="8" style="min-height: 200px;">
                                                     {% for tag in tags %}
                                                     <option value="{{ tag.id }}" {% if tag in video.tags %}selected{% endif %}>
                                                         {{ tag.name }}
@@ -419,6 +419,33 @@ document.addEventListener('DOMContentLoaded', function() {
     urlRadio.addEventListener('change', toggleInputs);
     fileRadio.addEventListener('change', toggleInputs);
 });
+
+// Fungsi untuk menangani modal
+function handleModal() {
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        modal.addEventListener('shown.bs.modal', function() {
+            document.body.classList.remove('modal-open');
+            const backdrops = document.querySelectorAll('.modal-backdrop');
+            backdrops.forEach(backdrop => {
+                if (backdrop !== modal.nextElementSibling) {
+                    backdrop.remove();
+                }
+            });
+        });
+
+        modal.addEventListener('hidden.bs.modal', function() {
+            const backdrops = document.querySelectorAll('.modal-backdrop');
+            backdrops.forEach(backdrop => backdrop.remove());
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+        });
+    });
+}
+
+// Panggil fungsi saat halaman dimuat
+handleModal();
 
 function deleteTag(tagId) {
     if (confirm('Yakin ingin menghapus tag ini?')) {
