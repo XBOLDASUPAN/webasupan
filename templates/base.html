@@ -591,6 +591,31 @@
         }
         
         /* Existing styles... */
+        
+        /* Pagination Styles */
+        .pagination .page-link {
+            background-color: var(--dark-bg);
+            border-color: #2a2a2a;
+            color: var(--text-primary);
+        }
+
+        .pagination .page-link:hover {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .pagination .page-item.disabled .page-link {
+            background-color: var(--dark-card);
+            border-color: #2a2a2a;
+            color: var(--text-secondary);
+        }
     </style>
     
     {% if not dev_mode and not request.endpoint == 'admin' and not request.endpoint == 'admin_login' %}
