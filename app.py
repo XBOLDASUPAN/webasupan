@@ -485,17 +485,23 @@ def logout():
 def edit_video_tags(id):
     try:
         video = Video.query.get_or_404(id)
-        tag_ids = request.form.getlist('tags[]')
         
-        # Clear existing tags
+        # Get tag IDs from form
+        tag_ids = request.form.getlist('tags')  
+        app.logger.info(f'Received tag_ids: {tag_ids}')
+        
+        # Clear existing tags but don't commit yet
         video.tags = []
-        db.session.commit()
         
-        # Add new tags
+        # Add new tags if any were selected
         if tag_ids:
+            # Convert string IDs to integers and get all tags at once
             tags = Tag.query.filter(Tag.id.in_([int(tag_id) for tag_id in tag_ids])).all()
             video.tags.extend(tags)
-            db.session.commit()
+            app.logger.info(f'Adding tags: {[tag.name for tag in tags]}')
+        
+        # Commit all changes at once
+        db.session.commit()
         
         flash('Tag video berhasil diupdate', 'success')
     except Exception as e:
