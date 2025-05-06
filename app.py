@@ -182,7 +182,7 @@ def popular():
         app.logger.error(f'Error in popular route: {str(e)}')
         raise
 
-@app.route('/admin')
+@app.route('/admin', methods=['GET'])
 @login_required
 def admin():
     try:
@@ -479,52 +479,6 @@ def logout():
     except Exception as e:
         app.logger.error(f'Error in logout route: {str(e)}')
         raise
-
-@app.route('/edit-video-tags/<int:id>', methods=['POST'])
-@login_required
-def edit_video_tags(id):
-    try:
-        video = Video.query.get_or_404(id)
-        
-        # Get tag IDs from form
-        tag_ids = request.form.getlist('tags')  # Make sure this matches the form field name
-        app.logger.info(f'Received tag_ids: {tag_ids}')
-        
-        if not tag_ids:
-            app.logger.warning('No tags received from form')
-            flash('Warning: Tidak ada tag yang dipilih', 'warning')
-            return redirect(url_for('admin'))
-        
-        try:
-            # Clear existing tags but don't commit yet
-            video.tags = []
-            
-            # Convert string IDs to integers and get all tags at once
-            tags = Tag.query.filter(Tag.id.in_([int(tag_id) for tag_id in tag_ids])).all()
-            
-            if not tags:
-                app.logger.warning('No valid tags found in database')
-                flash('Warning: Tag yang dipilih tidak valid', 'warning')
-                return redirect(url_for('admin'))
-            
-            video.tags.extend(tags)
-            app.logger.info(f'Adding tags: {[tag.name for tag in tags]}')
-            
-            # Commit all changes at once
-            db.session.commit()
-            flash('Tag video berhasil diupdate', 'success')
-            
-        except ValueError as ve:
-            app.logger.error(f'Invalid tag ID format: {str(ve)}')
-            db.session.rollback()
-            flash('Error: Format ID tag tidak valid', 'danger')
-            
-    except Exception as e:
-        app.logger.error(f'Error updating video tags: {str(e)}')
-        db.session.rollback()
-        flash('Error: Gagal mengupdate tag video', 'danger')
-    
-    return redirect(url_for('admin'))
 
 if __name__ == '__main__':
     with app.app_context():
