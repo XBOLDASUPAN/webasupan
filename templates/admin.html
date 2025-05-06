@@ -269,9 +269,9 @@
 
                         <!-- Modal Edit Tags -->
                         <div class="modal fade" id="editTagsModal{{ video.id }}" tabindex="-1" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content bg-dark text-white">
-                                    <div class="modal-header border-secondary">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
                                         <h5 class="modal-title">Edit Tag - {{ video.title }}</h5>
                                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
@@ -279,19 +279,26 @@
                                         <div class="modal-body">
                                             <div class="mb-3">
                                                 <label class="form-label">Tag</label>
-                                                <select name="tags[]" class="form-select bg-dark text-white border-secondary" multiple size="8">
+                                                <select name="tags[]" class="form-select bg-dark text-white" multiple size="8" style="min-height: 200px;">
                                                     {% for tag in tags %}
                                                     <option value="{{ tag.id }}" {% if tag in video.tags %}selected{% endif %}>
                                                         {{ tag.name }}
                                                     </option>
                                                     {% endfor %}
                                                 </select>
-                                                <div class="form-text">Tahan Ctrl (Windows) atau Command (Mac) untuk memilih beberapa tag</div>
+                                                <div class="form-text text-light mt-2">
+                                                    <i class="fas fa-info-circle me-1"></i>
+                                                    Tahan Ctrl (Windows) atau Command (Mac) untuk memilih beberapa tag
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="modal-footer border-secondary">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                            <button type="submit" class="btn btn-primary">Simpan</button>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                <i class="fas fa-times me-1"></i> Batal
+                                            </button>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-save me-1"></i> Simpan
+                                            </button>
                                         </div>
                                     </form>
                                 </div>
@@ -347,6 +354,43 @@
     height: calc(1.5em + 0.5rem + 2px);
     padding: 0.25rem 0.5rem;
     font-size: 0.875rem;
+}
+
+/* Modal styles */
+.modal {
+    z-index: 1050 !important;
+}
+
+.modal-backdrop {
+    z-index: 1040 !important;
+}
+
+.modal-content {
+    z-index: 1051 !important;
+}
+
+/* Fix untuk multiple select di dark mode */
+.form-select option {
+    background-color: var(--dark-bg);
+    color: white;
+}
+
+.form-select option:checked {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Fix untuk modal dark mode */
+.modal-content {
+    background-color: var(--dark-card) !important;
+}
+
+.modal-header, .modal-footer {
+    border-color: #2a2a2a !important;
+}
+
+.btn-close-white {
+    filter: invert(1) grayscale(100%) brightness(200%);
 }
 </style>
 
