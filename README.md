@@ -49,7 +49,13 @@ Sebuah platform video streaming dengan tampilan dark mode yang elegan, dibuat me
 
 ### Database
 - **SQLite**: Database lokal
-- **Tabel**: Users, Videos, Categories
+- **Tabel**: Users, Videos, Categories, Tags
+
+### Monetisasi
+- **Adsterra**: Platform iklan
+  - Banner Ads
+  - Social Bar
+  - Popunder
 
 ## Struktur Database
 
@@ -72,33 +78,120 @@ Sebuah platform video streaming dengan tampilan dark mode yang elegan, dibuat me
 - views
 - created_at
 
+### Tags
+- id (Primary Key)
+- name
+- videos (Many-to-Many Relationship)
+
 ## Kredensial Admin
 - Username: YADIRC
 - Password: YadiRc120502
 
-## Panduan Penggunaan
+## Panduan Instalasi
 
-### 1. Instalasi
+### 1. Clone Repository
 ```bash
 # Clone repository
-git clone [repository-url]
+git clone https://github.com/XBOLDASUPAN/webasupan.git
 
 # Masuk ke direktori
 cd webasupan
+```
+
+### 2. Setup Local Development
+```bash
+# Buat virtual environment
+python -m venv venv
+
+# Aktifkan virtual environment
+# Windows
+venv\Scripts\activate
+# Linux/Mac
+source venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
+
+# Buat direktori yang diperlukan
+mkdir -p static/uploads
+mkdir -p instance
 
 # Jalankan aplikasi
 python app.py
 ```
 
-### 2. Mengakses Panel Admin
-1. Buka http://localhost:5000/admin-login
+### 3. Deploy ke PythonAnywhere
+
+1. Buat akun di PythonAnywhere
+2. Buka Bash console dan jalankan:
+```bash
+# Clone repository
+git clone https://github.com/XBOLDASUPAN/webasupan.git
+cd webasupan
+
+# Setup virtual environment
+python3.13 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# Buat direktori
+mkdir -p static/uploads
+mkdir -p instance
+
+# Setup database
+python3
+```
+
+3. Di Python shell:
+```python
+from app import app, db, User
+from werkzeug.security import generate_password_hash
+
+with app.app_context():
+    # Buat semua tabel
+    db.create_all()
+    
+    # Buat user admin
+    admin = User.query.filter_by(username='YADIRC').first()
+    if not admin:
+        admin = User(username='YADIRC')
+        admin.password_hash = generate_password_hash('YadiRc120502')
+        db.session.add(admin)
+        db.session.commit()
+```
+
+4. Set permissions:
+```bash
+chmod 755 static/uploads
+chmod 755 instance
+```
+
+5. Konfigurasi Web App di PythonAnywhere:
+   - Source code: `/home/username/webasupan`
+   - Working directory: `/home/username/webasupan`
+   - Virtual env: `/home/username/webasupan/venv`
+   - WSGI file: Gunakan Flask default template
+
+6. Reload web app
+
+### 4. Konfigurasi Iklan
+
+1. Daftar di [Adsterra](https://adsterra.com)
+2. Dapatkan kode untuk:
+   - Banner Ads
+   - Social Bar
+   - Popunder
+3. Update kode di `templates/base.html`
+4. Nonaktifkan development mode di panel admin
+
+## Penggunaan
+
+### 1. Mengakses Panel Admin
+1. Buka `/admin-login`
 2. Login dengan kredensial admin
 3. Akses panel admin untuk mengelola konten
 
-### 3. Menambah Video
+### 2. Menambah Video
 1. Login sebagai admin
 2. Klik "Tambah Video"
 3. Isi form dengan:
@@ -106,115 +199,58 @@ python app.py
    - URL thumbnail
    - URL video
    - Pilih kategori
+   - Pilih tag (opsional)
 4. Klik "Tambah" untuk menyimpan
 
-### 4. Mengelola Kategori
+### 3. Mengelola Kategori
 1. Login sebagai admin
-2. Scroll ke bagian "Tambah Kategori"
+2. Scroll ke bagian "Kelola Kategori"
 3. Masukkan nama kategori
 4. Klik "Tambah" untuk menyimpan
 
-## Fitur Lengkap
-### Manajemen Video
-- [x] Upload video (URL atau file)
-- [x] Thumbnail otomatis dari video
-- [x] Pengelompokan video berdasarkan kategori
-- [x] Multiple tag untuk setiap video
-- [x] Pencarian video berdasarkan judul
-- [x] Tampilan video terbaru
-- [x] Penghitungan views untuk setiap video
-- [x] Pagination di semua halaman video
+### 4. Mengelola Tag
+1. Login sebagai admin
+2. Scroll ke bagian "Kelola Tag"
+3. Masukkan nama tag
+4. Klik "Tambah" untuk menyimpan
 
-### Kategori
-- [x] Manajemen kategori (tambah, hapus)
-- [x] Halaman khusus untuk setiap kategori
-- [x] Dropdown menu kategori di navbar
-- [x] Tampilan jumlah video per kategori
+## Troubleshooting
 
-### Tag
-- [x] Manajemen tag (tambah, hapus)
-- [x] Multiple tag selection saat upload video
-- [x] Halaman khusus untuk setiap tag
-- [x] Tampilan jumlah video per tag
-- [x] Delete tag menggunakan AJAX
+### Error yang Umum
 
-### UI/UX
-- [x] Responsive design menggunakan Bootstrap 5
-- [x] Dark theme
-- [x] Font Awesome icons
-- [x] Card layout untuk video
-- [x] Thumbnail dengan efek hover
-- [x] Navbar yang rapi dengan highlight menu aktif
-- [x] Flash messages untuk feedback
-- [x] Loading state saat upload
-- [x] Empty state saat tidak ada video
-- [x] Konfirmasi sebelum hapus
+1. **ModuleNotFoundError: No module named 'flask'**
+   - Pastikan virtual environment aktif
+   - Install ulang requirements
 
-### Admin
-- [x] Login admin
-- [x] Dashboard admin
-- [x] Manajemen video
-- [x] Manajemen kategori
-- [x] Manajemen tag
-- [x] Logout
+2. **No such table: video**
+   - Jalankan `db.create_all()` di Python shell
 
-### Manajemen Data
-- [x] Hapus semua video sekaligus
-- [x] Hapus semua kategori (termasuk video terkait)
-- [x] Hapus semua tag
-- [x] Konfirmasi sebelum penghapusan massal
-- [x] Rollback jika terjadi error
-- [x] Update UI secara otomatis setelah penghapusan
-- [x] Feedback menggunakan alert
+3. **Permission Error**
+   - Set permissions untuk folder uploads dan instance
 
-### Monetisasi
-- [x] Integrasi Adsterra Popunder
-- [x] Optimasi delay iklan (5 menit)
-- [x] Batasan 3 popunder per session
-- [x] Reset counter setiap 24 jam
-- [x] Anti-AdBlock system
-  - Deteksi cepat (1-2 detik)
-  - Multiple detection methods
-  - Overlay warning message
-  - Prevent bypass attempts
+4. **Iklan Tidak Muncul**
+   - Pastikan development mode nonaktif
+   - Periksa kode iklan di base.html
+   - Nonaktifkan ad blocker
 
-### Development Mode
-- [x] Toggle Development/Production mode
-- [x] Disable iklan saat development
-- [x] Status indikator di admin panel
-- [x] Automatic mode detection
-- [x] Safe testing environment
+## Maintenance
 
-### Security
-- [x] Admin area tanpa iklan
-- [x] Protection dari ad fraud
-- [x] Session management
-- [x] Prevent overlay removal
-- [x] Secure mode switching
+### Backup Database
+```bash
+cd instance
+cp videos.db videos.db.backup
+```
 
-## Catatan Pengembangan
-
-### Perubahan Terakhir
-1. Implementasi dark mode menyeluruh
-2. Perbaikan struktur HTML dengan wrapper
-3. Optimasi warna dan kontras
-4. Penyesuaian responsivitas
-
-### Todo List
-1. Implementasi fitur komentar
-2. Sistem rating video
-3. Halaman profil user
-4. Statistik view yang lebih detail
-5. Sistem bookmark video
-
-### Masalah yang Sudah Diperbaiki
-1. Struktur database untuk kategori
-2. Warna background yang tidak konsisten
-3. Responsivitas di mobile device
-4. Optimasi loading gambar
-
-## Kontribusi
-Silakan berkontribusi dengan membuat pull request atau melaporkan issues.
+### Update Aplikasi
+```bash
+git pull
+source venv/bin/activate
+pip install -r requirements.txt
+```
 
 ## Lisensi
-Copyright 2025 Web Asupan. All rights reserved.
+MIT License - Lihat file LICENSE untuk detail
+
+## Kontak
+- GitHub: [@XBOLDASUPAN](https://github.com/XBOLDASUPAN)
+- PythonAnywhere: [webasupan.pythonanywhere.com](https://webasupan.pythonanywhere.com)
