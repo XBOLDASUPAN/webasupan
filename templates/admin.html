@@ -279,7 +279,7 @@
                                         <div class="modal-body">
                                             <div class="mb-3">
                                                 <label class="form-label text-white">Pilih Tag</label>
-                                                <select name="tags[]" class="form-select" multiple size="8" style="min-height: 200px;">
+                                                <select name="tags" class="form-select" multiple size="8" style="min-height: 200px;">
                                                     {% for tag in tags %}
                                                     <option value="{{ tag.id }}" {% if tag in video.tags %}selected{% endif %}>
                                                         {{ tag.name }}

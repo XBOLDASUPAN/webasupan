@@ -483,22 +483,23 @@ def logout():
 @app.route('/edit-video-tags/<int:id>', methods=['POST'])
 @login_required
 def edit_video_tags(id):
-    video = Video.query.get_or_404(id)
-    tag_ids = request.form.getlist('tags[]')
-    
     try:
+        video = Video.query.get_or_404(id)
+        tag_ids = request.form.getlist('tags[]')
+        
         # Clear existing tags
-        video.tags.clear()
+        video.tags = []
+        db.session.commit()
         
         # Add new tags
-        for tag_id in tag_ids:
-            tag = Tag.query.get(tag_id)
-            if tag:
-                video.tags.append(tag)
+        if tag_ids:
+            tags = Tag.query.filter(Tag.id.in_([int(tag_id) for tag_id in tag_ids])).all()
+            video.tags.extend(tags)
+            db.session.commit()
         
-        db.session.commit()
         flash('Tag video berhasil diupdate', 'success')
     except Exception as e:
+        app.logger.error(f'Error updating video tags: {str(e)}')
         db.session.rollback()
         flash('Error: Gagal mengupdate tag video', 'danger')
     
