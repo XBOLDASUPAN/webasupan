@@ -8,7 +8,7 @@ Sebuah platform video streaming dengan tampilan dark mode yang elegan, dibuat me
 - [x] Upload video (URL atau file)
 - [x] Thumbnail otomatis dari video
 - [x] Pengelompokan video berdasarkan kategori
-- [x] Multiple tag untuk setiap video
+- [x] Tag untuk setiap video (diatur saat upload)
 - [x] Pencarian video berdasarkan judul
 - [x] Tampilan video terbaru
 - [x] Penghitungan views untuk setiap video
@@ -24,7 +24,7 @@ Sebuah platform video streaming dengan tampilan dark mode yang elegan, dibuat me
 ### 3. Panel Admin
 - Login sistem untuk admin
 - Manajemen video dan kategori
-- Form upload video dengan pilihan kategori
+- Form upload video dengan pilihan kategori dan tag
 - Daftar video dengan informasi lengkap
 - CRUD operasi untuk video dan kategori
 
@@ -84,6 +84,7 @@ Sebuah platform video streaming dengan tampilan dark mode yang elegan, dibuat me
 - category_id (Foreign Key)
 - views
 - created_at
+- tags (Many-to-Many Relationship)
 
 ### Tags
 - id (Primary Key)
@@ -210,12 +211,6 @@ chmod 755 instance
 1. Login sebagai admin
 2. Scroll ke bagian "Kelola Kategori"
 3. Masukkan nama kategori
-4. Klik "Tambah" untuk menyimpan
-
-### 4. Mengelola Tag
-1. Login sebagai admin
-2. Scroll ke bagian "Kelola Tag"
-3. Masukkan nama tag
 4. Klik "Tambah" untuk menyimpan
 
 ## Troubleshooting
