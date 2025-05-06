@@ -480,6 +480,30 @@ def logout():
         app.logger.error(f'Error in logout route: {str(e)}')
         raise
 
+@app.route('/edit-video-tags/<int:id>', methods=['POST'])
+@login_required
+def edit_video_tags(id):
+    video = Video.query.get_or_404(id)
+    tag_ids = request.form.getlist('tags[]')
+    
+    try:
+        # Clear existing tags
+        video.tags.clear()
+        
+        # Add new tags
+        for tag_id in tag_ids:
+            tag = Tag.query.get(tag_id)
+            if tag:
+                video.tags.append(tag)
+        
+        db.session.commit()
+        flash('Tag video berhasil diupdate', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash('Error: Gagal mengupdate tag video', 'danger')
+    
+    return redirect(url_for('admin'))
+
 if __name__ == '__main__':
     with app.app_context():
         # Create instance directory if it doesn't exist

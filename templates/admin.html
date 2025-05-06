@@ -258,11 +258,45 @@
                             </td>
                             <td>{{ video.views }}</td>
                             <td>
+                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editTagsModal{{ video.id }}">
+                                    <i class="fas fa-tags"></i>
+                                </button>
                                 <a href="{{ url_for('delete_video', id=video.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus video ini?')">
                                     <i class="fas fa-trash"></i>
                                 </a>
                             </td>
                         </tr>
+
+                        <!-- Modal Edit Tags -->
+                        <div class="modal fade" id="editTagsModal{{ video.id }}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content bg-dark text-white">
+                                    <div class="modal-header border-secondary">
+                                        <h5 class="modal-title">Edit Tag - {{ video.title }}</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form action="{{ url_for('edit_video_tags', id=video.id) }}" method="POST">
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label class="form-label">Tag</label>
+                                                <select name="tags[]" class="form-select bg-dark text-white border-secondary" multiple size="8">
+                                                    {% for tag in tags %}
+                                                    <option value="{{ tag.id }}" {% if tag in video.tags %}selected{% endif %}>
+                                                        {{ tag.name }}
+                                                    </option>
+                                                    {% endfor %}
+                                                </select>
+                                                <div class="form-text">Tahan Ctrl (Windows) atau Command (Mac) untuk memilih beberapa tag</div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer border-secondary">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                            <button type="submit" class="btn btn-primary">Simpan</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                         {% endfor %}
                     </tbody>
                 </table>

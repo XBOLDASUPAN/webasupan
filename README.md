@@ -12,7 +12,7 @@ Sebuah platform video streaming dengan tampilan dark mode yang elegan, dibuat me
 - [x] Pencarian video berdasarkan judul
 - [x] Tampilan video terbaru
 - [x] Penghitungan views untuk setiap video
-- [x] Pagination di semua halaman video
+- [x] Pagination dengan tema dark mode
 
 ### 2. Menu Navigasi
 - **Beranda**: Menampilkan semua video
@@ -29,11 +29,13 @@ Sebuah platform video streaming dengan tampilan dark mode yang elegan, dibuat me
 - CRUD operasi untuk video dan kategori
 
 ### 4. UI/UX
-- Dark mode dengan aksen warna hijau
+- Dark mode dengan aksen warna hijau (#00dc82)
 - Responsif di semua device
 - Animasi hover yang smooth
 - Loading yang optimal
 - Navigasi yang intuitif
+- Pagination yang sesuai tema
+- Spacing yang konsisten
 
 ## Teknologi
 
@@ -46,6 +48,11 @@ Sebuah platform video streaming dengan tampilan dark mode yang elegan, dibuat me
 - **Bootstrap 5**: Framework CSS
 - **Font Awesome**: Icon
 - **Custom CSS**: Dark mode styling
+  - Background: #121212
+  - Card: #1a1a1a
+  - Hover: #242424
+  - Primary: #00dc82
+  - Secondary: #00b868
 
 ### Database
 - **SQLite**: Database lokal
@@ -91,10 +98,7 @@ Sebuah platform video streaming dengan tampilan dark mode yang elegan, dibuat me
 
 ### 1. Clone Repository
 ```bash
-# Clone repository
 git clone https://github.com/XBOLDASUPAN/webasupan.git
-
-# Masuk ke direktori
 cd webasupan
 ```
 
