@@ -1,0 +1,462 @@
+{% extends "base.html" %}
+{% from "includes/pagination.html" import render_pagination %}
+
+{% block title %}Admin Panel{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h1 class="mb-4">Admin Panel</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="row">
+        <!-- Development Mode Card -->
+        <div class="col-12 mb-4">
+            <div class="card bg-dark text-white">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Development Mode</h5>
+                    <form action="{{ url_for('toggle_dev_mode') }}" method="POST" class="d-inline">
+                        <button type="submit" class="btn {% if dev_mode %}btn-success{% else %}btn-danger{% endif %}">
+                            {% if dev_mode %}
+                            <i class="fas fa-code me-1"></i> Development Mode Aktif
+                            {% else %}
+                            <i class="fas fa-globe me-1"></i> Production Mode
+                            {% endif %}
+                        </button>
+                    </form>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        {% if dev_mode %}
+                        <i class="fas fa-info-circle me-1"></i> Development Mode aktif. Semua iklan dinonaktifkan untuk testing.
+                        {% else %}
+                        <i class="fas fa-info-circle me-1"></i> Production Mode aktif. Iklan akan ditampilkan untuk pengunjung.
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Tambah Video -->
+        <div class="col-md-6 mb-4">
+            <div class="card bg-success text-white">
+                <div class="card-header bg-success border-light">
+                    <h5 class="card-title mb-0">Tambah Video</h5>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('add_video') }}" method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Judul</label>
+                            <input type="text" class="form-control bg-dark text-white border-light" id="title" name="title" required>
+                        </div>
+
+                        <!-- Thumbnail Options -->
+                        <div class="mb-3">
+                            <label class="form-label d-block">Thumbnail</label>
+                            <div class="btn-group mb-3" role="group">
+                                <input type="radio" class="btn-check" name="thumbnail_type" id="thumbnail_url_radio" value="url" checked>
+                                <label class="btn btn-outline-light" for="thumbnail_url_radio">URL</label>
+                                
+                                <input type="radio" class="btn-check" name="thumbnail_type" id="thumbnail_file_radio" value="file">
+                                <label class="btn btn-outline-light" for="thumbnail_file_radio">Upload File</label>
+                            </div>
+
+                            <div id="thumbnail_url_input" class="thumbnail-input">
+                                <input type="url" class="form-control bg-dark text-white border-light" 
+                                       id="thumbnail_url" name="thumbnail_url" 
+                                       placeholder="https://example.com/image.jpg">
+                            </div>
+
+                            <div id="thumbnail_file_input" class="thumbnail-input" style="display: none;">
+                                <input type="file" class="form-control bg-dark text-white border-light" 
+                                       id="thumbnail_file" name="thumbnail_file" 
+                                       accept=".png,.jpg,.jpeg,.gif,.webp">
+                                <div class="form-text text-light">
+                                    Format yang didukung: PNG, JPG, JPEG, GIF, WEBP (Max: 16MB)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="video_url" class="form-label">URL Video</label>
+                            <input type="url" class="form-control bg-dark text-white border-light" id="video_url" name="video_url" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="category_id" class="form-label">Kategori</label>
+                            <select class="form-select bg-dark text-white border-light" id="category_id" name="category_id">
+                                <option value="">Pilih Kategori</option>
+                                {% for category in categories %}
+                                <option value="{{ category.id }}">{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Tag</label>
+                            <select name="tags" class="form-select" multiple size="4">
+                                {% for tag in tags %}
+                                <option value="{{ tag.id }}">{{ tag.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-text text-light">Tahan Ctrl (Windows) atau Command (Mac) untuk memilih beberapa tag</div>
+                        </div>
+
+                        <button type="submit" class="btn btn-light">Tambah</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <!-- Form Tambah Kategori -->
+            <div class="card bg-success text-white mb-4">
+                <div class="card-header bg-success border-light">
+                    <h5 class="card-title mb-0">Kelola Kategori</h5>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('add_category') }}" method="POST" class="row g-3 mb-3">
+                        <div class="col-8">
+                            <input type="text" class="form-control bg-dark text-white border-light" name="name" placeholder="Nama kategori baru" required>
+                        </div>
+                        <div class="col-4">
+                            <button type="submit" class="btn btn-light w-100">Tambah</button>
+                        </div>
+                    </form>
+                    
+                    <div class="table-responsive mt-3">
+                        <table id="categoryTable" class="table table-dark table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nama Kategori</th>
+                                    <th>Jumlah Video</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for category in categories %}
+                                <tr>
+                                    <td>
+                                        <form action="{{ url_for('edit_category', id=category.id) }}" method="POST" class="d-flex">
+                                            <input type="text" class="form-control form-control-sm bg-dark text-white border-light me-2" 
+                                                   name="name" value="{{ category.name }}" required>
+                                            <button type="submit" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-save"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                    <td>{{ category.videos|length }}</td>
+                                    <td>
+                                        <a href="{{ url_for('delete_category', id=category.id) }}" 
+                                           class="btn btn-danger btn-sm" 
+                                           onclick="return confirm('Yakin ingin menghapus kategori ini? Video yang menggunakan kategori ini akan diset ke tanpa kategori.')">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Daftar Kategori</h5>
+                        <button class="btn btn-danger" onclick="deleteAllCategories()">
+                            <i class="fas fa-trash-alt me-1"></i> Hapus Semua
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Tambah Tag -->
+            <div class="card bg-success text-white mb-4">
+                <div class="card-header bg-success border-light">
+                    <h5 class="card-title mb-0">Kelola Tag</h5>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('add_tag') }}" method="POST" class="row g-3 mb-3">
+                        <div class="col-8">
+                            <input type="text" class="form-control bg-dark text-white border-light" name="name" placeholder="Nama tag baru" required>
+                        </div>
+                        <div class="col-4">
+                            <button type="submit" class="btn btn-light w-100">Tambah</button>
+                        </div>
+                    </form>
+
+                    <div class="table-responsive mt-3">
+                        <table id="tagTable" class="table table-dark table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nama Tag</th>
+                                    <th>Jumlah Video</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for tag in tags %}
+                                <tr data-tag-id="{{ tag.id }}">
+                                    <td>{{ tag.name }}</td>
+                                    <td>{{ tag.videos|length }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-danger" onclick="deleteTag({{ tag.id }})">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Daftar Tag</h5>
+                        <button class="btn btn-danger" onclick="deleteAllTags()">
+                            <i class="fas fa-trash-alt me-1"></i> Hapus Semua
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Daftar Video -->
+    <div class="card bg-dark text-white mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Daftar Video</h5>
+            <button class="btn btn-danger" onclick="deleteAllVideos()">
+                <i class="fas fa-trash-alt me-1"></i> Hapus Semua
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="videoTable" class="table table-dark table-hover">
+                    <thead>
+                        <tr>
+                            <th>Judul</th>
+                            <th>Kategori</th>
+                            <th>Tag</th>
+                            <th>Views</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for video in videos.items %}
+                        <tr>
+                            <td>{{ video.title }}</td>
+                            <td>{{ video.category.name if video.category else '-' }}</td>
+                            <td>
+                                {% for tag in video.tags %}
+                                <span class="badge bg-dark">{{ tag.name }}</span>
+                                {% endfor %}
+                            </td>
+                            <td>{{ video.views }}</td>
+                            <td>
+                                <a href="{{ url_for('delete_video', id=video.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus video ini?')">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {{ render_pagination(videos, 'admin') }}
+        </div>
+    </div>
+
+    <!-- Daftar Tag -->
+    <div class="card bg-success text-white mb-4">
+        <div class="card-header bg-success border-light">
+            <h5 class="card-title mb-0">Daftar Tag</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-dark table-hover">
+                    <thead>
+                        <tr>
+                            <th>Nama Tag</th>
+                            <th>Jumlah Video</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tag in tags %}
+                        <tr>
+                            <td>{{ tag.name }}</td>
+                            <td>{{ tag.videos|length }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-danger" onclick="deleteTag({{ tag.id }})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CSS tambahan -->
+<style>
+.form-control-sm {
+    height: calc(1.5em + 0.5rem + 2px);
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+</style>
+
+<!-- JavaScript untuk toggle thumbnail input -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const urlRadio = document.getElementById('thumbnail_url_radio');
+    const fileRadio = document.getElementById('thumbnail_file_radio');
+    const urlInput = document.getElementById('thumbnail_url_input');
+    const fileInput = document.getElementById('thumbnail_file_input');
+    
+    function toggleInputs() {
+        if (urlRadio.checked) {
+            urlInput.style.display = 'block';
+            fileInput.style.display = 'none';
+            document.getElementById('thumbnail_url').required = true;
+            document.getElementById('thumbnail_file').required = false;
+        } else {
+            urlInput.style.display = 'none';
+            fileInput.style.display = 'block';
+            document.getElementById('thumbnail_url').required = false;
+            document.getElementById('thumbnail_file').required = true;
+        }
+    }
+    
+    urlRadio.addEventListener('change', toggleInputs);
+    fileRadio.addEventListener('change', toggleInputs);
+});
+
+function deleteTag(tagId) {
+    if (confirm('Yakin ingin menghapus tag ini?')) {
+        fetch(`/admin/delete_tag/${tagId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Hapus baris tag dari tabel
+                document.querySelector(`tr[data-tag-id="${tagId}"]`).remove();
+                showAlert('success', 'Tag berhasil dihapus');
+            } else {
+                showAlert('danger', 'Gagal menghapus tag');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('danger', 'Terjadi kesalahan saat menghapus tag');
+        });
+    }
+}
+
+function deleteAllVideos() {
+    if (confirm('Yakin ingin menghapus SEMUA video? Tindakan ini tidak dapat dibatalkan!')) {
+        fetch('/admin/delete_all_videos', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Hapus semua baris video dari tabel
+                document.querySelector('#videoTable tbody').innerHTML = '';
+                showAlert('success', 'Semua video berhasil dihapus');
+            } else {
+                showAlert('danger', 'Gagal menghapus semua video');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('danger', 'Terjadi kesalahan saat menghapus video');
+        });
+    }
+}
+
+function deleteAllCategories() {
+    if (confirm('Yakin ingin menghapus SEMUA kategori? Semua video juga akan terhapus! Tindakan ini tidak dapat dibatalkan!')) {
+        fetch('/admin/delete_all_categories', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Hapus semua baris kategori dari tabel
+                document.querySelector('#categoryTable tbody').innerHTML = '';
+                // Hapus semua baris video karena video juga terhapus
+                document.querySelector('#videoTable tbody').innerHTML = '';
+                showAlert('success', 'Semua kategori berhasil dihapus');
+            } else {
+                showAlert('danger', 'Gagal menghapus semua kategori');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('danger', 'Terjadi kesalahan saat menghapus kategori');
+        });
+    }
+}
+
+function deleteAllTags() {
+    if (confirm('Yakin ingin menghapus SEMUA tag? Tindakan ini tidak dapat dibatalkan!')) {
+        fetch('/admin/delete_all_tags', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Hapus semua baris tag dari tabel
+                document.querySelector('#tagTable tbody').innerHTML = '';
+                showAlert('success', 'Semua tag berhasil dihapus');
+            } else {
+                showAlert('danger', 'Gagal menghapus semua tag');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('danger', 'Terjadi kesalahan saat menghapus tag');
+        });
+    }
+}
+
+function showAlert(type, message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+    document.querySelector('.container').insertBefore(alertDiv, document.querySelector('.container').firstChild);
+    
+    // Hapus alert setelah 3 detik
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 3000);
+}
+</script>
+{% endblock %}

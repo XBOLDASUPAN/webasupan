@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="id" class="dark-mode">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Asupan - {% block title %}{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #00dc82;
+            --secondary-color: #00b868;
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --dark-hover: #2d2d2d;
+            --text-primary: #b3b3b3;
+            --text-secondary: #808080;
+            --text-muted: #666666;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html.dark-mode {
+            background-color: var(--dark-bg);
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg) !important;
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #wrapper {
+            flex: 1;
+            background-color: var(--dark-bg);
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .container {
+            background-color: var(--dark-bg);
+            position: relative;
+            z-index: 2;
+        }
+
+        .bg-light {
+            background-color: var(--dark-bg) !important;
+        }
+        
+        .display-4 {
+            color: var(--text-primary) !important;
+        }
+        
+        :root {
+            --primary-color: #00dc82;
+            --secondary-color: #00b868;
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --dark-hover: #2d2d2d;
+            --text-primary: #b3b3b3;
+            --text-secondary: #808080;
+            --text-muted: #666666;
+        }
+        
+        html.dark-mode {
+            background-color: var(--dark-bg);
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: var(--dark-card);
+            box-shadow: 0 2px 4px rgba(0,0,0,.2);
+            padding: 1rem 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 600;
+            font-size: 1.5rem;
+            color: var(--primary-color) !important;
+        }
+        
+        .nav-link {
+            color: var(--text-secondary) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary-color) !important;
+            transform: translateY(-2px);
+        }
+        
+        .video-card {
+            background: var(--dark-card);
+            transition: all 0.3s ease;
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,.2);
+        }
+        
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,.3);
+            background: var(--dark-hover);
+        }
+        
+        .card-body {
+            background: var(--dark-card);
+            padding: 1.5rem;
+        }
+        
+        .card-title {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            color: var(--dark-bg);
+        }
+        
+        .btn-primary:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,220,130,0.3);
+            color: var(--dark-bg);
+        }
+        
+        .alert {
+            background: var(--dark-card);
+            border: 1px solid var(--primary-color);
+            color: var(--text-primary);
+        }
+        
+        .modal-content {
+            background: var(--dark-card);
+            border: none;
+            border-radius: 15px;
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid var(--dark-hover);
+            color: var(--text-primary);
+            background: var(--dark-hover);
+        }
+        
+        .modal-header .btn-close {
+            filter: invert(1) brightness(200%);
+        }
+        
+        .form-control {
+            background: var(--dark-hover);
+            border: 2px solid var(--dark-card);
+            color: var(--text-primary);
+        }
+        
+        .form-control:focus {
+            background: var(--dark-hover);
+            border-color: var(--primary-color);
+            color: var(--text-primary);
+            box-shadow: 0 0 0 3px rgba(0,220,130,0.2);
+        }
+
+        .form-select {
+            background-color: var(--dark-hover);
+            border: 2px solid var(--dark-card);
+            color: var(--text-primary);
+        }
+
+        .form-select:focus {
+            background-color: var(--dark-hover);
+            border-color: var(--primary-color);
+            color: var(--text-primary);
+            box-shadow: 0 0 0 3px rgba(0,220,130,0.2);
+        }
+        
+        .table {
+            color: var(--text-primary);
+        }
+        
+        .table th {
+            background: var(--dark-hover);
+            border-color: var(--dark-card);
+            color: var(--text-primary);
+        }
+        
+        .table td {
+            border-color: var(--dark-hover);
+            color: var(--text-primary);
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: var(--dark-hover);
+            color: var(--text-primary);
+        }
+        
+        .badge {
+            background: var(--primary-color) !important;
+            color: var(--dark-bg) !important;
+        }
+        
+        .text-muted {
+            color: var(--text-muted) !important;
+        }
+
+        .text-light {
+            color: var(--text-primary) !important;
+        }
+
+        .text-secondary {
+            color: var(--text-secondary) !important;
+        }
+        
+        .admin-card {
+            background: var(--dark-card);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .popular-badge {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--dark-bg);
+        }
+        
+        footer {
+            background: var(--dark-card);
+            color: var(--text-secondary);
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        .thumbnail-container {
+            position: relative;
+            padding-top: 56.25%;
+            overflow: hidden;
+            border-radius: 15px 15px 0 0;
+            background: var(--dark-bg);
+        }
+
+        .thumbnail-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .play-overlay i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .video-card:hover .play-overlay {
+            opacity: 1;
+        }
+
+        .video-card:hover .thumbnail-container img {
+            transform: scale(1.05);
+        }
+
+        .empty-state i {
+            color: var(--dark-hover) !important;
+        }
+        
+        .container {
+            background-color: var(--dark-bg);
+        }
+        
+        @media (max-width: 768px) {
+            .navbar-nav {
+                background: var(--dark-card);
+                padding: 1rem;
+                border-radius: 10px;
+                margin-top: 1rem;
+            }
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--dark-bg);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--dark-hover);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+
+        /* Placeholder color */
+        ::placeholder {
+            color: var(--text-muted) !important;
+            opacity: 1;
+        }
+
+        :-ms-input-placeholder {
+            color: var(--text-muted) !important;
+        }
+
+        ::-ms-input-placeholder {
+            color: var(--text-muted) !important;
+        }
+        
+        /* Video Card Styles */
+        .video-card {
+            transition: transform 0.2s;
+            background-color: #2c3034;
+            border: 1px solid #373b3e;
+        }
+        
+        .video-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .video-card .card-title {
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .thumbnail-container {
+            position: relative;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            overflow: hidden;
+            background-color: #000;
+        }
+        
+        .thumbnail-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .play-overlay i {
+            color: #fff;
+            font-size: 3rem;
+        }
+        
+        .video-card:hover .play-overlay {
+            opacity: 1;
+        }
+        
+        /* Empty State Styles */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #6c757d;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .empty-state h3 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .empty-state p {
+            margin-bottom: 0;
+        }
+        
+        /* Navbar Styles */
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.4rem;
+        }
+        
+        .navbar-brand i {
+            color: #dc3545;
+        }
+        
+        .nav-link {
+            font-size: 0.95rem;
+            padding: 0.5rem 1rem !important;
+            transition: color 0.2s;
+        }
+        
+        .nav-link:hover {
+            color: #dc3545 !important;
+        }
+        
+        .nav-link.active {
+            color: #dc3545 !important;
+            font-weight: 500;
+        }
+        
+        .dropdown-menu {
+            border: 1px solid #373b3e;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem 0;
+        }
+        
+        .dropdown-item {
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            transition: all 0.2s;
+        }
+        
+        .dropdown-item:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .form-control {
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+        }
+        
+        .form-control:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+        
+        .btn-outline-light:hover {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        
+        /* Ad Container Styles */
+        .ad-container {
+            text-align: center;
+            margin: 1rem 0;
+            min-height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .ad-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .ad-overlay-content {
+            background: #1a1d20;
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+            max-width: 90%;
+        }
+        
+        .ad-close-btn {
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        /* Anti AdBlock Styles */
+        #adblockOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 999999;
+        }
+        
+        .adblock-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1a1d20;
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+        }
+        
+        .adblock-icon {
+            font-size: 3rem;
+            color: #dc3545;
+            margin-bottom: 1rem;
+        }
+        
+        .adblock-title {
+            color: #fff;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .adblock-text {
+            color: #adb5bd;
+            margin-bottom: 1.5rem;
+        }
+        
+        .adblock-button {
+            background: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .adblock-button:hover {
+            background: #bb2d3b;
+        }
+
+        /* Dummy ad elements for detection */
+        .ad-element {
+            position: absolute;
+            top: -999px;
+            left: -999px;
+            width: 1px;
+            height: 1px;
+            pointer-events: none;
+        }
+        
+        /* Existing styles... */
+    </style>
+    
+    {% if not dev_mode and not request.endpoint == 'admin' and not request.endpoint == 'admin_login' %}
+    <!-- Quick AdBlock Detection -->
+    <script>
+        (function() {
+            let adblockDetected = false;
+            
+            function showOverlay() {
+                document.getElementById('adblockOverlay').style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+
+            // Metode deteksi cepat
+            function quickDetect() {
+                if (window.google_ad_status === 1) return false;
+                if (window.google_ad_height) return false;
+                return true;
+            }
+
+            // Inject dummy ad elements
+            const adElement = document.createElement('div');
+            adElement.className = 'ad-element pub_300x250 text-ad adsbox';
+            document.head.appendChild(adElement);
+
+            // Cek cepat saat loading
+            if (quickDetect()) {
+                showOverlay();
+            }
+        })();
+    </script>
+
+    <!-- Adsterra Popunder -->
+    <script type='text/javascript' src='//pl26569248.profitableratecpm.com/58/fe/d8/58fed8555c4576d948bc5e2feeb4d0db.js'></script>
+    {% endif %}
+</head>
+<body class="bg-dark">
+    <!-- Anti AdBlock Overlay -->
+    <div id="adblockOverlay">
+        <div class="adblock-content">
+            <div class="adblock-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h2 class="adblock-title">AdBlock Terdeteksi!</h2>
+            <p class="adblock-text">
+                Mohon nonaktifkan AdBlock untuk melanjutkan menonton video.<br>
+                Website ini menggunakan iklan untuk mendukung konten gratis.
+            </p>
+            <button class="adblock-button" onclick="location.reload()">
+                <i class="fas fa-sync-alt me-1"></i> Refresh Halaman
+            </button>
+        </div>
+    </div>
+
+    <div id="wrapper">
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="{{ url_for('index') }}">
+                    <i class="fas fa-play-circle me-2"></i>Web Asupan
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link {{ 'active' if request.endpoint == 'index' }}" href="{{ url_for('index') }}">
+                                <i class="fas fa-home me-1"></i> Beranda
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ 'active' if request.endpoint == 'latest' }}" href="{{ url_for('latest') }}">
+                                <i class="fas fa-clock me-1"></i> Terbaru
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle {{ 'active' if request.endpoint == 'category' }}" 
+                               href="#" id="categoriesDropdown" role="button" 
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-folder me-1"></i> Kategori
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="categoriesDropdown">
+                                {% for category in categories %}
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('category', id=category.id) }}">
+                                        {{ category.name }}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    </ul>
+                    
+                    <form class="d-flex me-3" action="{{ url_for('index') }}" method="GET">
+                        <div class="input-group">
+                            <input type="text" name="q" class="form-control bg-dark text-white border-secondary" 
+                                   placeholder="Cari video..." value="{{ search_query if search_query }}">
+                            <button class="btn btn-outline-light" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+
+                    {% if current_user.is_authenticated %}
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link {{ 'active' if request.endpoint == 'admin' }}" href="{{ url_for('admin') }}">
+                                <i class="fas fa-cog me-1"></i> Admin
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('logout') }}">
+                                <i class="fas fa-sign-out-alt me-1"></i> Logout
+                            </a>
+                        </li>
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+
+        <!-- Search Modal -->
+        <div class="modal fade" id="searchModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header border-0">
+                        <h5 class="modal-title">Cari Video</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ url_for('index') }}" method="GET">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="q" placeholder="Masukkan kata kunci..." required>
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fas fa-search me-1"></i> Cari
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ad Container Top -->
+        {% if not dev_mode and not request.endpoint == 'admin' and not request.endpoint == 'admin_login' %}
+        <div class="ad-container mb-4">
+            <!-- Adsterra Banner Ad -->
+            <script type="text/javascript">
+                atOptions = {
+                    'key' : 'YOUR_BANNER_KEY',
+                    'format' : 'iframe',
+                    'height' : 90,
+                    'width' : 728,
+                    'params' : {}
+                };
+                document.write('<scr' + 'ipt type="text/javascript" src="//www.topcreativeformat.com/YOUR_BANNER_KEY/invoke.js"></scr' + 'ipt>');
+            </script>
+        </div>
+        {% endif %}
+
+        <div class="container my-4">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            {% block content %}{% endblock %}
+        </div>
+
+        <!-- Ad Container Bottom -->
+        {% if not dev_mode and not request.endpoint == 'admin' and not request.endpoint == 'admin_login' %}
+        <div class="ad-container mt-4">
+            <!-- Adsterra Banner Ad -->
+            <script type="text/javascript">
+                atOptions = {
+                    'key' : 'YOUR_BANNER_KEY',
+                    'format' : 'iframe',
+                    'height' : 90,
+                    'width' : 728,
+                    'params' : {}
+                };
+                document.write('<scr' + 'ipt type="text/javascript" src="//www.topcreativeformat.com/YOUR_BANNER_KEY/invoke.js"></scr' + 'ipt>');
+            </script>
+        </div>
+        {% endif %}
+
+        <!-- Adsterra Pop Ads -->
+        {% if not dev_mode and not request.endpoint == 'admin' and not request.endpoint == 'admin_login' %}
+        <script type='text/javascript' src='//pl21476538.toprevenuegate.com/0b/b1/83/0bb183add20003f1f35b4d6a7c7c6e6d.js'></script>
+        {% endif %}
+
+        <!-- Adsterra Social Bar -->
+        {% if not dev_mode and not request.endpoint == 'admin' and not request.endpoint == 'admin_login' %}
+        <script type='text/javascript' src='//pl21476538.toprevenuegate.com/0b/b1/83/0bb183add20003f1f35b4d6a7c7c6e6d.js'></script>
+        {% endif %}
+
+        <footer>
+            <div class="container text-center">
+                <p class="mb-0">&copy; 2025 Web Asupan. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Ad Overlay -->
+    {% if not dev_mode and not request.endpoint == 'admin' and not request.endpoint == 'admin_login' %}
+    <div id="adOverlay" class="ad-overlay" style="display: none;">
+        <div class="ad-overlay-content">
+            <h4 class="text-white mb-3">Tunggu Sebentar...</h4>
+            <!-- Adsterra Interstitial Ad -->
+            <script type="text/javascript">
+                atOptions = {
+                    'key' : 'YOUR_INTERSTITIAL_KEY',
+                    'format' : 'iframe',
+                    'height' : 300,
+                    'width' : 400,
+                    'params' : {}
+                };
+                document.write('<scr' + 'ipt type="text/javascript" src="//www.topcreativeformat.com/YOUR_INTERSTITIAL_KEY/invoke.js"></scr' + 'ipt>');
+            </script>
+            <button id="adCloseBtn" class="btn btn-primary ad-close-btn">
+                Lanjutkan ke Video <i class="fas fa-arrow-right ms-1"></i>
+            </button>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Ad Scripts -->
+    {% if not dev_mode and not request.endpoint == 'admin' and not request.endpoint == 'admin_login' %}
+    <script>
+        // Fungsi untuk menampilkan overlay iklan
+        function showAdOverlay() {
+            document.getElementById('adOverlay').style.display = 'flex';
+            // Tampilkan tombol close setelah 5 detik
+            setTimeout(() => {
+                document.getElementById('adCloseBtn').style.display = 'inline-block';
+            }, 5000);
+        }
+
+        // Fungsi untuk menyembunyikan overlay iklan
+        function hideAdOverlay() {
+            document.getElementById('adOverlay').style.display = 'none';
+        }
+
+        // Event listener untuk tombol close
+        document.getElementById('adCloseBtn').addEventListener('click', hideAdOverlay);
+
+        // Tampilkan overlay iklan saat mengklik link video
+        document.addEventListener('DOMContentLoaded', function() {
+            const videoLinks = document.querySelectorAll('a[href*="view_video"]');
+            videoLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const href = this.getAttribute('href');
+                    showAdOverlay();
+                    // Redirect ke video setelah menutup iklan
+                    document.getElementById('adCloseBtn').addEventListener('click', function() {
+                        window.location.href = href;
+                    }, { once: true });
+                });
+            });
+        });
+    </script>
+    {% endif %}
+
+    <!-- Popunder Click Handler -->
+    {% if not dev_mode and not request.endpoint == 'admin' and not request.endpoint == 'admin_login' %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Deteksi klik pada link video
+            const videoLinks = document.querySelectorAll('a[href*="view_video"]');
+            let lastClick = 0;
+            const CLICK_DELAY = 5 * 60 * 1000; // 5 menit dalam milidetik
+            const MAX_POPUNDERS_PER_SESSION = 3; // Maksimal 3 popunder per session
+            let popunderCount = parseInt(sessionStorage.getItem('popunderCount') || '0');
+
+            videoLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const now = Date.now();
+                    
+                    // Cek apakah sudah lewat delay dan belum mencapai batas maksimal
+                    if (now - lastClick >= CLICK_DELAY && popunderCount < MAX_POPUNDERS_PER_SESSION) {
+                        // Update waktu klik terakhir
+                        lastClick = now;
+                        localStorage.setItem('lastPopunderClick', lastClick);
+                        
+                        // Update dan simpan jumlah popunder
+                        popunderCount++;
+                        sessionStorage.setItem('popunderCount', popunderCount);
+                    }
+                });
+            });
+
+            // Reset popunder count setiap 24 jam
+            const lastReset = localStorage.getItem('lastPopunderReset');
+            const now = Date.now();
+            if (!lastReset || now - parseInt(lastReset) >= 24 * 60 * 60 * 1000) {
+                sessionStorage.setItem('popunderCount', '0');
+                localStorage.setItem('lastPopunderReset', now);
+            }
+
+            // Cek waktu klik terakhir saat halaman dimuat
+            const storedLastClick = localStorage.getItem('lastPopunderClick');
+            if (storedLastClick) {
+                lastClick = parseInt(storedLastClick);
+            }
+        });
+    </script>
+    {% endif %}
+
+    <!-- Enhanced Anti AdBlock Script -->
+    {% if not dev_mode and not request.endpoint == 'admin' and not request.endpoint == 'admin_login' %}
+    <script>
+        (function() {
+            const CHECK_INTERVAL = 1000; // Check setiap 1 detik
+            let detectionCount = 0;
+            const MAX_RETRIES = 3;
+
+            function detectAdBlock() {
+                // Buat dan inject elemen dummy ads
+                const testAds = [
+                    { class: 'banner_ad', id: 'adsbox' },
+                    { class: 'google_ads_iframe', id: 'google_ads_iframe' },
+                    { class: 'adsbygoogle', id: 'adsbygoogle' }
+                ];
+
+                testAds.forEach(ad => {
+                    const elem = document.createElement('div');
+                    elem.className = ad.class;
+                    elem.id = ad.id;
+                    elem.style.cssText = 'position:absolute;top:-999px;left:-999px;width:1px;height:1px;';
+                    document.body.appendChild(elem);
+
+                    // Cek jika elemen dihapus atau disembunyikan
+                    if (elem.offsetHeight === 0 || 
+                        elem.clientHeight === 0 || 
+                        window.getComputedStyle(elem).display === 'none') {
+                        detectionCount++;
+                    }
+
+                    elem.remove();
+                });
+
+                // Jika terdeteksi lebih dari 2 kali
+                if (detectionCount >= 2) {
+                    document.getElementById('adblockOverlay').style.display = 'block';
+                    document.body.style.overflow = 'hidden';
+                    clearInterval(checkInterval);
+                }
+            }
+
+            // Mulai deteksi cepat
+            const checkInterval = setInterval(detectAdBlock, CHECK_INTERVAL);
+
+            // Stop checking setelah beberapa kali retry
+            setTimeout(() => {
+                clearInterval(checkInterval);
+            }, CHECK_INTERVAL * MAX_RETRIES);
+
+            // Prevent overlay removal
+            const observer = new MutationObserver(mutations => {
+                mutations.forEach(mutation => {
+                    if (mutation.type === 'childList') {
+                        const overlay = document.getElementById('adblockOverlay');
+                        if (overlay && overlay.style.display === 'none' && detectionCount >= 2) {
+                            overlay.style.display = 'block';
+                        }
+                    }
+                });
+            });
+
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        })();
+    </script>
+    {% endif %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
