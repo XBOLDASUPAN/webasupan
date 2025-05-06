@@ -53,10 +53,10 @@
                     <h5 class="card-title mb-0">Tambah Video</h5>
                 </div>
                 <div class="card-body">
-                    <form action="{{ url_for('add_video') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ url_for('add_video') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                         <div class="mb-3">
                             <label for="title" class="form-label">Judul</label>
-                            <input type="text" class="form-control bg-dark text-white border-light" id="title" name="title" required>
+                            <input type="text" class="form-control bg-dark text-white border-light" id="title" name="title" required autocomplete="off">
                         </div>
 
                         <!-- Thumbnail Options -->
@@ -73,13 +73,13 @@
                             <div id="thumbnail_url_input" class="thumbnail-input">
                                 <input type="url" class="form-control bg-dark text-white border-light" 
                                        id="thumbnail_url" name="thumbnail_url" 
-                                       placeholder="https://example.com/image.jpg">
+                                       placeholder="https://example.com/image.jpg" autocomplete="off">
                             </div>
 
                             <div id="thumbnail_file_input" class="thumbnail-input" style="display: none;">
                                 <input type="file" class="form-control bg-dark text-white border-light" 
                                        id="thumbnail_file" name="thumbnail_file" 
-                                       accept=".png,.jpg,.jpeg,.gif,.webp">
+                                       accept=".png,.jpg,.jpeg,.gif,.webp" autocomplete="off">
                                 <div class="form-text text-light">
                                     Format yang didukung: PNG, JPG, JPEG, GIF, WEBP (Max: 16MB)
                                 </div>
@@ -88,12 +88,12 @@
 
                         <div class="mb-3">
                             <label for="video_url" class="form-label">URL Video</label>
-                            <input type="url" class="form-control bg-dark text-white border-light" id="video_url" name="video_url" required>
+                            <input type="url" class="form-control bg-dark text-white border-light" id="video_url" name="video_url" required autocomplete="off">
                         </div>
 
                         <div class="mb-3">
                             <label for="category_id" class="form-label">Kategori</label>
-                            <select class="form-select bg-dark text-white border-light" id="category_id" name="category_id">
+                            <select class="form-select bg-dark text-white border-light" id="category_id" name="category_id" autocomplete="off">
                                 <option value="">Pilih Kategori</option>
                                 {% for category in categories %}
                                 <option value="{{ category.id }}">{{ category.name }}</option>
@@ -103,7 +103,7 @@
 
                         <div class="mb-3">
                             <label class="form-label">Tag</label>
-                            <select name="tags" class="form-select" multiple size="4">
+                            <select name="tags" class="form-select" multiple size="4" autocomplete="off">
                                 {% for tag in tags %}
                                 <option value="{{ tag.id }}">{{ tag.name }}</option>
                                 {% endfor %}
@@ -124,9 +124,9 @@
                     <h5 class="card-title mb-0">Kelola Kategori</h5>
                 </div>
                 <div class="card-body">
-                    <form action="{{ url_for('add_category') }}" method="POST" class="row g-3 mb-3">
+                    <form action="{{ url_for('add_category') }}" method="POST" class="row g-3 mb-3" autocomplete="off">
                         <div class="col-8">
-                            <input type="text" class="form-control bg-dark text-white border-light" name="name" placeholder="Nama kategori baru" required>
+                            <input type="text" class="form-control bg-dark text-white border-light" name="name" placeholder="Nama kategori baru" required autocomplete="off">
                         </div>
                         <div class="col-4">
                             <button type="submit" class="btn btn-light w-100">Tambah</button>
@@ -146,9 +146,9 @@
                                 {% for category in categories %}
                                 <tr>
                                     <td>
-                                        <form action="{{ url_for('edit_category', id=category.id) }}" method="POST" class="d-flex">
+                                        <form action="{{ url_for('edit_category', id=category.id) }}" method="POST" class="d-flex" autocomplete="off">
                                             <input type="text" class="form-control form-control-sm bg-dark text-white border-light me-2" 
-                                                   name="name" value="{{ category.name }}" required>
+                                                   name="name" value="{{ category.name }}" required autocomplete="off">
                                             <button type="submit" class="btn btn-warning btn-sm">
                                                 <i class="fas fa-save"></i>
                                             </button>
@@ -182,9 +182,9 @@
                     <h5 class="card-title mb-0">Kelola Tag</h5>
                 </div>
                 <div class="card-body">
-                    <form action="{{ url_for('add_tag') }}" method="POST" class="row g-3 mb-3">
+                    <form action="{{ url_for('add_tag') }}" method="POST" class="row g-3 mb-3" autocomplete="off">
                         <div class="col-8">
-                            <input type="text" class="form-control bg-dark text-white border-light" name="name" placeholder="Nama tag baru" required>
+                            <input type="text" class="form-control bg-dark text-white border-light" name="name" placeholder="Nama tag baru" required autocomplete="off">
                         </div>
                         <div class="col-4">
                             <button type="submit" class="btn btn-light w-100">Tambah</button>
@@ -275,11 +275,11 @@
                                         <h5 class="modal-title text-white">Edit Tag - {{ video.title }}</h5>
                                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <form action="{{ url_for('edit_video_tags', id=video.id) }}" method="POST">
+                                    <form action="{{ url_for('edit_video_tags', id=video.id) }}" method="POST" autocomplete="off">
                                         <div class="modal-body">
                                             <div class="mb-3">
-                                                <label class="form-label text-white">Pilih Tag</label>
-                                                <select name="tag_ids" class="form-select" multiple size="8" style="min-height: 200px;">
+                                                <label for="tags-{{ video.id }}" class="form-label text-white">Pilih Tag</label>
+                                                <select id="tags-{{ video.id }}" name="tag_ids" class="form-select" multiple size="8" style="min-height: 200px;" aria-label="Pilih tag untuk video" autocomplete="off">
                                                     {% for tag in tags %}
                                                     <option value="{{ tag.id }}" {% if tag in video.tags %}selected{% endif %}>
                                                         {{ tag.name }}
