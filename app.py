@@ -53,18 +53,18 @@ def allowed_file(filename):
 
 db = SQLAlchemy(app)
 
+# Association table for Video-Tag many-to-many relationship
+video_tags = db.Table('video_tags',
+    db.Column('video_id', db.Integer, db.ForeignKey('video.id'), primary_key=True),
+    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True)
+)
+
 # Konfigurasi Flask-Login
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'admin_login'
 login_manager.login_message = 'Silakan login terlebih dahulu.'
 login_manager.login_message_category = 'warning'
-
-# Model untuk tabel perantara many-to-many antara Video dan Tag
-video_tags = db.Table('video_tags',
-    db.Column('video_id', db.Integer, db.ForeignKey('video.id'), primary_key=True),
-    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True)
-)
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -487,15 +487,15 @@ if __name__ == '__main__':
         if not os.path.exists(instance_dir):
             os.makedirs(instance_dir)
             
+        # Create all database tables
         db.create_all()
         
         # Create default admin user if not exists
-        if not User.query.filter_by(username='YADIRC').first():
-            admin = User(
-                username='YADIRC',
-                password_hash=generate_password_hash('YadiRc120502')
-            )
+        admin = User.query.filter_by(username='YADIRC').first()
+        if not admin:
+            admin = User(username='YADIRC')
+            admin.password_hash = generate_password_hash('YadiRc120502')
             db.session.add(admin)
             db.session.commit()
             
-    app.run(debug=True)
+        app.run(debug=True)
